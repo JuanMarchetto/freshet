@@ -26,7 +26,7 @@
 > crates.io. `freshet` = a sudden river surge fed by many tributaries — the fan-out
 > metaphor; figuratively "a sudden overflow/abundance"; free on crates.io, no negative
 > connotation / no software-crypto trademark collision. Crate = `freshet`; GitHub org
-> `freshet-rs`; demo programs `freshet-royale` etc. The on-chain control account is
+> the `JuanMarchetto/freshet` repo; demo programs `freshet-royale` etc. The on-chain control account is
 > still named `Effect`.)
 >
 > **Changelog v0.4 → v0.5** (after the state-machine model-check-lite, 2026-06-16, 86

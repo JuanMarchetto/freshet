@@ -2,7 +2,7 @@
 
 > **Renamed Cascade → `freshet`** (2026-06-16; "cascade"/"cascada" taken on crates.io).
 > "Cascade" below = `freshet`. Authoritative spec: `SPEC.md` (v0.4). Crate `freshet`,
-> org `freshet-rs`, demos `freshet-royale`.
+> repo `github.com/JuanMarchetto/freshet`, demos `freshet-royale`.
 
 > Working name: **Cascade** (alt: *Crankset*, *Sweep*, *Tick*). The on-chain account
 > that holds the rule + progress is the `Effect` PDA — hence the project dir name.

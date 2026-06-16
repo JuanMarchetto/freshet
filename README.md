@@ -31,20 +31,28 @@ name: a *freshet* is a sudden river surge fed by many tributaries.
 ```
 core/      freshet — framework-agnostic crate: partition (§2.8), state machine + engine,
            monoid. no_std; `Machine` model behind the `std` feature. 31 tests.
-program/   freshet-program — Pinocchio (no_std) on-chain program. layout (zero-copy Pod,
+program/   freshet-program — Pinocchio (no_std) reference settler. layout (zero-copy Pod,
            compile-time offset asserts), error map, §11 security helpers, 16 instructions.
-SPEC.md    the authoritative contract (v0.6).  DESIGN.md / GAMES.md  strategy + demo eval.
+royale/    freshet-royale — a battle-royale demo consumer of the core: each round
+           eliminates every player who didn't act, INCLUDING offline ones (push-mode,
+           which a pull-based "claim-it-yourself" design cannot express).
+SPEC.md    the authoritative contract.  DESIGN.md / GAMES.md  strategy + demo eval.
+BENCHMARK.md  measured Pinocchio compute units + the cross-framework plan.
 ```
 
 ## Build & test
 
 ```bash
-cargo test                  # core (31) + program unit + mollusk integration (host)
-cargo build-sbf --manifest-path program/Cargo.toml   # the deployable .so
+cargo test                                            # core + program + royale (host + mollusk)
+cargo build-sbf --manifest-path program/Cargo.toml    # the deployable settler .so
+cargo build-sbf --manifest-path royale/Cargo.toml     # the demo .so
+SBF_OUT_DIR=target/deploy cargo test -p freshet-program --test bench_cu -- --nocapture  # CU report
 ```
 
 The reference settler uses a concrete demo consumer (each member is a `u64`, the effect
-credits every account by a delta). A real consumer implements its own `apply`/`reduce`.
+credits every account by a delta). `royale` is a second consumer (player elimination).
+Both reuse the verified `freshet` core guards; a real consumer implements its own
+`apply`/`reduce`.
 
 ## Status
 
