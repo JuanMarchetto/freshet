@@ -1,0 +1,19 @@
+[package]
+name = "freshet"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Resumable, permissionless, sharded MapReduce over Solana accounts (framework-agnostic core)"
+repository = "https://github.com/JuanMarchetto/freshet"
+keywords = ["solana", "crank", "settlement", "mapreduce"]
+categories = ["no-std"]
+
+[features]
+# `std` enables the host-only executable model (Machine + its Vec<ShardState>) used by
+# the property tests. The on-chain `program` crate depends on `freshet` with
+# default-features = false (no_std): it uses only the pure guards, partition, monoid,
+# Status, and Err — all alloc-free.
+default = ["std"]
+std = []
+
+[dependencies]
