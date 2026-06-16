@@ -3,11 +3,11 @@
 A primitive that cranks state across many accounts lives or dies on its per-member
 compute cost, so freshet treats CU as a first-class, measured property — not a claim.
 
-> **Honesty up front.** Only the **Pinocchio** implementation exists today, so only its
-> column has real numbers. The Quasar and Anchor columns are **not yet implemented** and
-> are left empty on purpose — no estimated or hand-waved figures. The cross-framework
-> comparison is the *plan* (§ "Cross-framework", below); the methodology and harness here
-> are built so those columns fill in with apples-to-apples numbers once the ports land.
+> **Honesty up front.** **Pinocchio** and **Anchor** are implemented and measured below
+> (real mollusk numbers). **Quasar** is not yet ported, so its column is left empty on
+> purpose — no estimated figures. All three share the same byte layout, the same trivial
+> `apply`, the same fixed batch widths, and the same mollusk harness, so the table
+> measures framework overhead, not consumer logic.
 
 ## Methodology
 
@@ -66,28 +66,45 @@ CU-bound first and forces a smaller batch — `apply` cost, not freshet overhead
 limiter. This is why §14 of `SPEC.md` reports overhead separately from total and forbids
 any unqualified "deterministic CU per crank" claim.
 
-## Cross-framework (planned)
+## Cross-framework
 
-The headline artifact is the *same primitive* in three frameworks, benchmarked identically.
+The headline artifact: the *same primitive* (same byte layout, same validation, same
+delegation to the verified `freshet::state` guards), in three frameworks, benchmarked
+identically. Measured with `cargo test -p freshet-anchor --test bench_cu` etc.
 
-| instruction | Pinocchio | Quasar | Anchor |
+| metric | Pinocchio | Anchor | Quasar |
 |---|--:|--:|--:|
-| `advance_apply` overhead | 3 844 CU | — | — |
-| `advance_apply` per-member | 1 683 CU | — | — |
-| `init_shards` | 3 427 CU | — | — |
+| `advance_apply` overhead (intercept) | **3 844 CU** | **5 222 CU** | — |
+| `advance_apply` per-member (slope) | **1 683 CU** | **1 897 CU** | — |
+| `advance_apply` (batch = 2) | 7 212 CU | 9 016 CU | — |
+| `try_finish_apply` | 173 CU | 925 CU | — |
+| `finalize` | 78 CU | 600 CU | — |
 
-Status and expectation (to be confirmed by measurement, not asserted):
+### Pinocchio vs Anchor (measured)
 
-- **Quasar** — zero-copy/`no_std` like Pinocchio; expected to land close to these numbers.
-  Its typed `remaining_accounts` caps at 64, so `reduce_shards`/`enroll_batch` would use the
-  raw accessor (see `SPEC.md` §15.1). *Not yet implemented.*
-- **Anchor** — IDL/ergonomics at a CU premium; the interesting question is *how much* the
-  account-deserialization overhead adds versus the hand-rolled zero-copy path. *Not yet
-  implemented.*
+Both implementations do **identical work** — same byte-array layout, same owner/disc/
+canonical-PDA checks, same escrow binding, same per-member loop, same `freshet` core
+guards. The gap is purely Anchor's framework wrapper:
 
-To keep the comparison fair, all three will share: the same fixed `BATCH` widths, the same
-byte-array account layouts (§2.7), the same trivial `apply`, and this same mollusk harness —
-so the table measures framework overhead, not consumer logic.
+- **Fixed overhead: +1 378 CU** (3 844 → 5 222). This is Anchor's 8-byte sighash dispatch,
+  borsh arg decode, and `Context`/`UncheckedAccount` construction. It shows starkly on the
+  tiny ops — `finalize` 78 → 600 CU, `try_finish_apply` 173 → 925 CU — which are almost
+  entirely framework overhead since they touch one account.
+- **Per-member: +214 CU** (1 683 → 1 897), ~13% — Anchor's per-account handling on top of
+  the shared canonical-PDA check that dominates either way.
+- **Net at batch = 2: +25%** (7 212 → 9 016); the relative gap shrinks as batch grows
+  because the fixed overhead amortizes (at batch = 8: 17 309 → 20 398, +18%).
+
+Takeaway: Anchor costs a flat ~1.4k CU per instruction for its ergonomics; for a crank
+invoked thousands of times the hand-rolled Pinocchio path is the better economic fit,
+which is the case freshet's reference settler makes.
+
+### Quasar (pending)
+
+Zero-copy / `no_std` like Pinocchio; expected to land near the Pinocchio column. It is a
+beta git dependency (`blueshift-gg/quasar`, not published to crates.io) and its typed
+`remaining_accounts` caps at 64, so the member batch uses the raw accessor (see `SPEC.md`
+§15.1). Port + measurement is the remaining work; **no number is asserted until it builds.**
 
 ## Caveats
 
