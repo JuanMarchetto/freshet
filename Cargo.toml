@@ -1,3 +1,6 @@
 [workspace]
 members = ["core", "program", "royale", "anchor"]
+# `quasar/` is a standalone workspace: Quasar pins solana crate versions that conflict with
+# Anchor/mollusk's, and a shared lockfile leaks `std` into Quasar's no_std SBF build.
+exclude = ["quasar"]
 resolver = "2"

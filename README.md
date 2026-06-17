@@ -36,8 +36,12 @@ program/   freshet-program — Pinocchio (no_std) reference settler. layout (zer
 royale/    freshet-royale — a battle-royale demo consumer of the core: each round
            eliminates every player who didn't act, INCLUDING offline ones (push-mode,
            which a pull-based "claim-it-yourself" design cannot express).
+anchor/    freshet-anchor — Anchor port of the benchmark path (same byte layout +
+           core delegation), for the cross-framework CU comparison.
+quasar/    freshet-quasar — Quasar port of the benchmark path. Standalone workspace
+           (own Cargo.lock); turns out the cheapest of the three (see BENCHMARK.md).
 SPEC.md    the authoritative contract.  DESIGN.md / GAMES.md  strategy + demo eval.
-BENCHMARK.md  measured Pinocchio compute units + the cross-framework plan.
+BENCHMARK.md  measured Pinocchio + Anchor + Quasar compute units, cross-framework.
 ```
 
 ## Build & test
@@ -58,9 +62,11 @@ Both reuse the verified `freshet` core guards; a real consumer implements its ow
 
 Core + the full 16-instruction program are implemented and build for SBF; mollusk
 integration tests cover the full single-pass lifecycle to `Done` and the cross-escrow-drain
-rejection. Deferred: System-CPI account creation (handlers assume pre-allocated PDAs), pull
-mode (gated off), the broader test matrix + compute-unit regression gate, and the
-`freshet-royale` demo game. Not audited; **`ID` is a placeholder** — do not deploy as-is.
+rejection. The benchmark path is ported to all three frameworks (Pinocchio, Anchor, Quasar)
+and measured (`BENCHMARK.md`), and `freshet-royale` is a working demo consumer. Deferred:
+System-CPI account creation (handlers assume pre-allocated PDAs), pull mode (gated off), and
+the broader test matrix + compute-unit regression gate. Not audited; **`ID` is a
+placeholder** — do not deploy as-is.
 
 ## License
 
