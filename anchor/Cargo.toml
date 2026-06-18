@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 description = "Anchor port of the freshet reference settler — for the cross-framework CU benchmark"
+publish = false # benchmark port — only the `freshet` core crate is published
 
 [lib]
 crate-type = ["lib", "cdylib"]

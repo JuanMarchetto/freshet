@@ -2,11 +2,19 @@
 name = "freshet"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.85"
+authors = ["Juan Patricio Marchetto"]
 license = "MIT"
 description = "Resumable, permissionless, sharded MapReduce over Solana accounts (framework-agnostic core)"
 repository = "https://github.com/JuanMarchetto/freshet"
-keywords = ["solana", "crank", "settlement", "mapreduce"]
-categories = ["no-std"]
+homepage = "https://github.com/JuanMarchetto/freshet"
+documentation = "https://docs.rs/freshet"
+readme = "README.md"
+keywords = ["solana", "crank", "settlement", "mapreduce", "pda"]
+categories = ["no-std", "cryptography::cryptocurrencies", "algorithms"]
+
+[package.metadata.docs.rs]
+all-features = true
 
 [features]
 # `std` enables the host-only executable model (Machine + its Vec<ShardState>) used by

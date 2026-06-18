@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 description = "freshet on-chain program (Pinocchio): a resumable, sharded MapReduce over Solana accounts"
+publish = false # reference settler / benchmark target — only the `freshet` core crate is published
 
 [lib]
 crate-type = ["lib", "cdylib"]

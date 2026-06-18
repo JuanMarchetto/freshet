@@ -1,5 +1,9 @@
 # freshet
 
+[![crates.io](https://img.shields.io/crates/v/freshet.svg)](https://crates.io/crates/freshet)
+[![docs.rs](https://img.shields.io/docsrs/freshet)](https://docs.rs/freshet)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A resumable, permissionless, shardable **MapReduce over Solana accounts**. One on-chain
 event can modify an unbounded number of accounts — settling a prediction market to all
 winners, ticking a world of game entities, mass payouts — by partitioning the work into
@@ -43,6 +47,18 @@ quasar/    freshet-quasar — Quasar port of the benchmark path. Standalone work
 SPEC.md    the authoritative contract.  DESIGN.md / GAMES.md  strategy + demo eval.
 BENCHMARK.md  measured Pinocchio + Anchor + Quasar compute units, cross-framework.
 ```
+
+## Use the crate
+
+The framework-agnostic core is published as [`freshet`](https://crates.io/crates/freshet):
+
+```toml
+[dependencies]
+freshet = { version = "0.1", default-features = false } # no_std, for on-chain programs
+```
+
+The reference programs (`program/` Pinocchio, `anchor/`, the Quasar port) and the `royale/`
+demo are not published — they consume the crate.
 
 ## Build & test
 
